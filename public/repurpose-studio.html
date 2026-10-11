@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Repurpose Studio — Content Calendar & Repurposing Tool</title>
+<style>
+:root{--bg:#09090b;--side:#0e0e11;--card:#131316;--line:#25252b;--text:#efeae0;--mute:#8b887f;--gold:#d4af5a;--gold2:#8f7230;--Thread:#d4af5a;--LinkedIn:#6c9bff;--Newsletter:#c08cf0;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:#09090b;color:var(--text);font:14px system-ui,-apple-system,Segoe UI,sans-serif;display:flex;min-height:100vh}
+aside{width:220px;background:var(--side);border-right:1px solid var(--line);padding:22px 14px;position:sticky;top:0;height:100vh;flex-shrink:0}
+.logo{display:flex;align-items:center;gap:10px;margin:0 8px 28px}
+.logo i{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--gold),var(--gold2));display:grid;place-items:center;color:#111;font-style:normal;font-weight:700}
+.logo b{font:600 17px Georgia,serif;color:var(--gold)}
+nav a{display:flex;gap:10px;padding:10px 12px;border-radius:9px;color:var(--mute);cursor:pointer;margin-bottom:4px}
+nav a.on,nav a:hover{background:#1a1a1f;color:var(--text)}
+nav a.on{box-shadow:inset 2px 0 0 var(--gold)}
+.wrap{flex:1;min-width:0;padding:24px 32px 40px}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;gap:12px;flex-wrap:wrap}
+.top h1{margin:0;font:600 26px Georgia,serif}
+.top p{margin:4px 0 0;color:var(--mute)}
+.btn{background:linear-gradient(135deg,var(--gold),#b88f35);color:#16120a;border:0;border-radius:10px;padding:10px 16px;font-weight:700;cursor:pointer;font-size:13px}
+.btn.g{background:transparent;color:var(--gold);border:1px solid var(--gold2)}
+.btn.sm{padding:6px 10px;font-size:11px;border-radius:8px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+.stat small{color:var(--mute);text-transform:uppercase;letter-spacing:1px;font-size:10.5px}
+.stat div{font:600 26px Georgia,serif;margin-top:6px;color:var(--gold)}
+.stat span{font-size:12px;color:var(--mute)}
+.cols{display:grid;grid-template-columns:5fr 6fr;gap:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}
+.card h3{margin:0 0 14px;font:600 16px Georgia,serif}
+label{display:block;font-size:10.5px;letter-spacing:1px;text-transform:uppercase;color:var(--mute);margin:12px 0 6px}
+input,textarea,select{width:100%;background:#0b0b0d;border:1px solid var(--line);border-radius:9px;padding:10px 12px;color:var(--text);font:13px system-ui}
+input:focus,textarea:focus{outline:1px solid var(--gold2)}
+textarea{line-height:1.5;resize:vertical}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opts{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0;align-items:center}
+.pill{border:1px solid var(--line);border-radius:99px;padding:6px 12px;font-size:12px;color:var(--mute);cursor:pointer;user-select:none}
+.pill.on{border-color:var(--gold);color:var(--gold);background:#1b170c}
+.tabs{display:flex;gap:6px;margin-bottom:14px;border-bottom:1px solid var(--line)}
+.tab{padding:9px 14px;cursor:pointer;color:var(--mute);border-bottom:2px solid transparent;font-weight:600;font-size:13px}
+.tab.on{color:var(--text);border-color:var(--gold)}
+.post{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px;background:#0f0f12}
+.post .h{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--mute);margin-bottom:8px;gap:8px;flex-wrap:wrap}
+.post .h b{color:var(--gold)}
+.post textarea{height:110px;font-size:13px}
+.post .r{display:flex;gap:6px;align-items:center}
+.post .r input{width:auto;padding:4px 6px;font-size:11px}
+.empty{color:var(--mute);text-align:center;padding:36px 10px}
+.cal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:10px}
+.cal-head h3{margin:0}
+.nav2{display:flex;gap:8px;align-items:center}
+.legend{display:flex;gap:14px;color:var(--mute);font-size:12px}
+.legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px}
+.scroll{overflow-x:auto}
+.grid{display:grid;grid-template-columns:repeat(7,minmax(112px,1fr));gap:6px;min-width:800px}
+.dow{font-size:10.5px;letter-spacing:1px;color:var(--mute);text-align:center;padding:4px}
+.cell{min-height:104px;background:#0f0f12;border:1px solid var(--line);border-radius:9px;padding:6px}
+.cell.dim{opacity:.3}.cell.over{border-color:var(--gold)}
+.cell.today{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold2)}
+.n{font-size:11px;color:var(--mute);margin-bottom:4px}
+.chip{border-left:3px solid;background:#1a1a1f;border-radius:5px;padding:4px 6px;margin-bottom:4px;font-size:10.5px;cursor:grab;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chip:hover{background:#24242b}
+.view{display:none}.view.on{display:block}
+.lib{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px;background:#0f0f12;gap:10px;flex-wrap:wrap}
+.lib b{color:var(--gold)}.lib span{color:var(--mute);font-size:12px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.72);display:none;align-items:center;justify-content:center;padding:16px;z-index:20}
+.modal.on{display:flex}
+.box{background:var(--card);border:1px solid var(--gold2);border-radius:14px;padding:20px;width:min(640px,100%)}
+.box textarea{height:240px}
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--gold);color:#111;padding:10px 18px;border-radius:99px;font-weight:700;font-size:13px;opacity:0;pointer-events:none;transition:.3s;z-index:30}
+#toast.on{opacity:1}
+.lic{margin:24px 8px 0;padding:12px;border:1px solid var(--line);border-radius:10px;font-size:12px;color:var(--mute)}
+.lic b{display:block;color:var(--text);margin-bottom:6px}
+.lic .ok{color:#5fd08a}.lic .bad{color:#ff9d9d;margin-top:4px}
+.lic .btn{width:100%;margin-top:10px}
+.st{margin-top:8px;font-size:11.5px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.st b{padding:2px 9px;border-radius:99px;font-size:10.5px;letter-spacing:.5px;text-transform:uppercase;border:1px solid}
+.st.scheduled b{color:var(--gold);border-color:var(--gold2)}
+.st.publishing b{color:#6c9bff;border-color:#6c9bff}
+.st.published b{color:#5fd08a;border-color:#5fd08a}
+.st.failed b{color:#ff7a7a;border-color:#ff7a7a}
+.st.manual b{color:var(--mute);border-color:var(--line)}
+.st.manual span{color:var(--mute)}
+.st .err{color:#ff9d9d;flex:1;min-width:140px}
+.st a{color:var(--gold)}
+@media(max-width:1000px){.cols{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}aside{display:none}.wrap{padding:16px}}
+</style>
+</head>
+<body>
+<aside>
+  <div class="logo"><i>R</i><b>Repurpose</b></div>
+  <nav>
+    <a class="on" data-v="studio">✦ &nbsp;Studio</a>
+    <a data-v="calendar">▦ &nbsp;Calendar</a>
+    <a data-v="library">❏ &nbsp;Library</a>
+  </nav>
+  <div class="lic" id="li"></div>
+</aside>
+
+<div class="wrap">
+  <div class="top">
+    <div><h1>Repurpose Studio</h1><p>Turn one long article into a week of social content.</p></div>
+    <div class="opts"><button class="btn g" id="csv">Export CSV</button><button class="btn g" id="copyAll">Copy all posts</button></div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><small>Articles</small><div id="s1">0</div><span>in library</span></div>
+    <div class="stat"><small>Posts generated</small><div id="s2">0</div><span>across 3 channels</span></div>
+    <div class="stat"><small>Upcoming</small><div id="s3">0</div><span>scheduled ahead</span></div>
+    <div class="stat"><small>Next post</small><div id="s4" style="font-size:18px;padding-top:7px">—</div><span id="s5">nothing scheduled</span></div>
+  </div>
+
+  <!-- STUDIO -->
+  <div class="view on" id="studio">
+    <div class="cols">
+      <div class="card">
+        <h3>1 · Add your article</h3>
+        <label>Title</label><input id="title" placeholder="e.g. Why Every Fresher Should Learn Data Structures">
+        <label>Article text</label><textarea id="text" style="height:200px" placeholder="Paste your long-form article or blog post here..."></textarea>
+        <label>Generate for</label>
+        <div class="opts" id="chans"><span class="pill on" data-t="Thread">🧵 Thread</span><span class="pill on" data-t="LinkedIn">💼 LinkedIn</span><span class="pill on" data-t="Newsletter">📬 Newsletter</span></div>
+        <div class="two">
+          <div><label>Start date</label><input type="date" id="start"></div>
+          <div><label>Tone</label><select id="tone"><option>Professional</option><option>Casual</option><option>Bold</option></select></div>
+        </div>
+        <div class="opts" style="margin-top:10px"><span class="pill" id="wk">Skip weekends</span></div>
+        <div class="opts" style="margin-top:12px"><button class="btn" id="gen">✦ Generate &amp; Schedule</button><button class="btn g" id="sample">Load sample</button></div>
+      </div>
+      <div class="card">
+        <h3 id="outTitle">2 · Generated content</h3>
+        <div class="tabs" id="tabs"></div>
+        <div id="posts"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CALENDAR -->
+  <div class="view" id="calendar">
+    <div class="card">
+      <div class="cal-head">
+        <div class="nav2"><button class="btn g sm" id="prev">◀</button><h3 id="mname"></h3><button class="btn g sm" id="next">▶</button><button class="btn g sm" id="todayB">Today</button></div>
+        <div class="legend"><span><i style="background:var(--Thread)"></i>Thread</span><span><i style="background:var(--LinkedIn)"></i>LinkedIn</span><span><i style="background:var(--Newsletter)"></i>Newsletter</span></div>
+      </div>
+      <div class="scroll"><div class="grid" id="grid"></div></div>
+      <p style="color:var(--mute);font-size:12px;margin:12px 0 0">Drag a post to another day to reschedule · click a post to edit.</p>
+    </div>
+  </div>
+
+  <!-- LIBRARY -->
+  <div class="view" id="library"><div class="card"><h3>Article library</h3><div id="libList"></div></div></div>
+</div>
+
+<div class="modal" id="modal"><div class="box">
+  <div id="mhead" style="font:600 12px system-ui;letter-spacing:1px;text-transform:uppercase;color:var(--gold);margin-bottom:10px"></div>
+  <textarea id="mtext"></textarea>
+  <div id="mstat"></div>
+  <div class="two" style="margin-top:10px"><input type="date" id="mdate"><input type="time" id="mtime"></div>
+  <div class="opts" style="margin-top:14px"><button class="btn" id="msave">Save</button><button class="btn g" id="mcopy">Copy</button><button class="btn g" id="mdel">Delete</button><button class="btn g" id="mclose">Close</button></div>
+</div></div>
+<div id="toast"></div>
+
+<script>
+/* ================= STATE ================= */
+let S={articles:[],posts:[]};
+let curAid=null,curTab='Thread',curPost=null;
+let view=new Date();view.setDate(1);
+const $=id=>document.getElementById(id);
+const pad=n=>String(n).padStart(2,'0');
+const iso=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const parse=s=>{const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)};
+const uid=()=>Math.random().toString(36).slice(2,9);
+const toast=m=>{const t=$('toast');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),1800)};
+const copy=t=>{navigator.clipboard.writeText(t).then(()=>toast('Copied ✓')).catch(()=>toast('Copy not allowed here'))};
+const ICON={Thread:'🧵',LinkedIn:'💼',Newsletter:'📬'},TIME={Thread:'10:00',LinkedIn:'09:00',Newsletter:'08:00'};
+
+/* ================= API (MongoDB via Express) ================= */
+const api=async(method,url,body)=>{
+  const r=await fetch(url,{method,headers:body?{'Content-Type':'application/json'}:{},body:body?JSON.stringify(body):undefined});
+  const j=await r.json().catch(()=>({}));
+  if(!r.ok)throw new Error(j.error||('Server error '+r.status));
+  return j;
+};
+const mapA=a=>({id:a._id,title:a.title,created:iso(new Date(a.createdAt))});
+const mapP=p=>({id:p._id,aid:p.articleId,type:p.type,text:p.text,date:p.date,time:p.time,status:p.status,error:p.error,url:p.publishedUrl});
+const fail=e=>{toast(e.message);load()};
+const applyStatus=(p,r)=>Object.assign(p,{status:r.status,error:r.error,url:r.publishedUrl});
+const sync=p=>api('PATCH','/api/posts/'+p.id,{text:p.text,date:p.date,time:p.time}).then(r=>{if(r.status!==p.status){applyStatus(p,r);renderAll()}}).catch(fail);
+const MARK={published:'✓ ',failed:'⚠ ',publishing:'⏳ '};
+const locked=p=>p.status==='published'||p.status==='publishing';
+async function retry(p){try{applyStatus(p,await api('POST','/api/posts/'+p.id+'/retry'));renderAll();closeM();toast('Back in the queue ✓')}catch(e){toast(e.message)}}
+function statusEl(p){
+  if(p.type==='Thread'){const d=document.createElement('div');d.className='st manual';d.innerHTML='<b>manual</b><span>Copy and post it yourself (not automated)</span>';return d}
+  const d=document.createElement('div');d.className='st '+p.status;
+  const b=document.createElement('b');b.textContent=p.status;d.appendChild(b);
+  if(p.status==='failed'){
+    const e=document.createElement('span');e.className='err';e.textContent=p.error||'Publishing failed';d.appendChild(e);
+    const r=document.createElement('button');r.className='btn g sm';r.textContent='Retry';r.onclick=()=>retry(p);d.appendChild(r);
+  }
+  if(p.status==='published'&&!p.url&&p.type==='Newsletter'){const e=document.createElement('span');e.textContent='Email sent ✓';d.appendChild(e)}
+  if(p.status==='published'&&p.url){const a=document.createElement('a');a.href=p.url;a.target='_blank';a.rel='noopener';a.textContent='View on LinkedIn ↗';d.appendChild(a)}
+  return d;
+}
+const timers={};
+const syncLater=p=>{clearTimeout(timers[p.id]);timers[p.id]=setTimeout(()=>sync(p),600)};
+async function load(){
+  try{
+    const[a,p]=await Promise.all([api('GET','/api/articles'),api('GET','/api/posts')]);
+    S.articles=a.map(mapA);S.posts=p.map(mapP);
+    if(!S.articles.find(x=>x.id===curAid))curAid=S.articles[0]?.id||null;
+  }catch(e){toast('Cannot load saved data: '+e.message)}
+  renderAll();
+}
+
+/* ================= TEXT ENGINE ================= */
+const STOP=new Set("the a an and or but of to in on for with is are was were be been it this that as at by from not have has had you your we our they their will can would should could so if then than also more most other into about over just very what which who how when where why do does did there these those them its being while because every make makes".split(" "));
+const TONE={
+ Professional:{hook:'',cta:"What's your take? Share your thoughts below 👇",thread:'A thread 👇',end:'Found this useful? Follow for more insights. ♻️'},
+ Casual:{hook:'',cta:'Thoughts? Drop a comment 👇',thread:"Let's dive in 👇",end:"That's a wrap! Share it with a friend 🙌"},
+ Bold:{hook:'Hot take: ',cta:'Disagree? Say it in the comments. 🔥',thread:'Read this twice 👇',end:'Repost if you agree. Follow for more. 🔥'}
+};
+const sentences=t=>(t.replace(/\s+/g,' ').match(/[^.!?]+[.!?]+["')]?|[^.!?]+$/g)||[]).map(s=>s.trim()).filter(Boolean);
+function keywords(t,n=3){const f={};(t.toLowerCase().match(/[a-z]{5,}/g)||[]).forEach(w=>{if(!STOP.has(w))f[w]=(f[w]||0)+1});return Object.entries(f).sort((a,b)=>b[1]-a[1]).slice(0,n).map(e=>e[0])}
+function blocks(text){
+  const p=text.split(/\n\s*\n/).map(x=>x.trim()).filter(x=>x.length>40);
+  if(p.length>=4)return p;
+  const s=sentences(text),o=[];for(let i=0;i<s.length;i+=3)o.push(s.slice(i,i+3).join(' '));return o;
+}
+function pick(a,n,off=0){return Array.from({length:n},(_,i)=>a[(Math.floor(i*a.length/n)+off)%a.length])}
+function makeThread(title,text,tn){
+  const parts=[];let cur='';
+  sentences(text).forEach(s=>{
+    while(s.length>260){parts.push(s.slice(0,260));s=s.slice(260)}
+    if((cur+' '+s).trim().length>260&&cur){parts.push(cur);cur=s}else cur=(cur+' '+s).trim();
+  });
+  if(cur)parts.push(cur);
+  const all=['🧵 '+title+'\n\n'+tn.thread,...parts.slice(0,7),tn.end];
+  return all.map((t,i)=>`${i+1}/${all.length} ${t}`).join('\n---\n');
+}
+function makeLinkedIn(block,tags,tn){
+  const s=sentences(block);
+  return `${tn.hook}${s[0]||block}\n\n${s.slice(1).join(' ').slice(0,450)}\n\n${tn.cta}\n\n${tags.map(t=>'#'+t).join(' ')}`.replace(/\n\n\n/g,'\n\n');
+}
+const makeNews=(block,title,k)=>`📬 ${title} — Insight #${k}\n\n${sentences(block).slice(0,3).join(' ')}\n\nRead the full article → [add link]`;
+
+/* ================= GENERATE + SCHEDULE ================= */
+async function generate(){
+  const title=$('title').value.trim()||'Untitled article',text=$('text').value.trim();
+  if(text.length<120)return toast('Paste a longer article first');
+  const chans=[...document.querySelectorAll('#chans .pill.on')].map(p=>p.dataset.t);
+  if(!chans.length)return toast('Select at least one channel');
+  const tn=TONE[$('tone').value],tags=keywords(text),bl=blocks(text);
+  const li=pick(bl,3),nl=pick(bl,2,1),has=c=>chans.includes(c);
+  const queue=[
+    has('Thread')&&['Thread',makeThread(title,text,tn)],
+    has('LinkedIn')&&['LinkedIn',makeLinkedIn(li[0],tags,tn)],
+    has('Newsletter')&&['Newsletter',makeNews(nl[0],title,1)],
+    has('LinkedIn')&&['LinkedIn',makeLinkedIn(li[1],tags,tn)],
+    has('Newsletter')&&['Newsletter',makeNews(nl[1],title,2)],
+    has('LinkedIn')&&['LinkedIn',makeLinkedIn(li[2],tags,tn)]
+  ].filter(Boolean);
+  let d=$('start').value?parse($('start').value):new Date();
+  const skip=$('wk').classList.contains('on');
+  const items=[];
+  queue.forEach(([type,body])=>{
+    if(skip)while(d.getDay()%6===0)d.setDate(d.getDate()+1);
+    items.push({type,text:body,date:iso(d),time:TIME[type]});
+    d=new Date(d);d.setDate(d.getDate()+1);
+  });
+  $('gen').disabled=true;
+  try{
+    const res=await api('POST','/api/articles',{title,text,posts:items});
+    const a=mapA(res.article);
+    S.articles.unshift(a);
+    res.posts.forEach(p=>S.posts.push(mapP(p)));
+    curAid=a.id;curTab=queue[0][0];
+    view=parse($('start').value||iso(new Date()));view.setDate(1);
+    renderAll();toast(`${queue.length} posts saved & scheduled ✓`);
+  }catch(e){toast('Not saved: '+e.message)}
+  finally{$('gen').disabled=false}
+}
+
+/* ================= RENDER ================= */
+function renderStats(){
+  const now=new Date(),today=iso(now);
+  $('s1').textContent=S.articles.length;$('s2').textContent=S.posts.length;
+  const up=S.posts.filter(p=>p.date>=today).sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
+  $('s3').textContent=up.length;
+  $('s4').textContent=up[0]?`${parse(up[0].date).toLocaleDateString('en',{day:'numeric',month:'short'})} · ${up[0].time}`:'—';
+  $('s5').textContent=up[0]?`${up[0].type} post`:'nothing scheduled';
+}
+function renderStudio(){
+  const mine=S.posts.filter(p=>p.aid===curAid);
+  const art=S.articles.find(a=>a.id===curAid);
+  $('outTitle').textContent=art?'2 · '+art.title:'2 · Generated content';
+  $('tabs').innerHTML=['Thread','LinkedIn','Newsletter'].map(k=>`<div class="tab ${k===curTab?'on':''}" data-k="${k}">${ICON[k]} ${k} · ${mine.filter(p=>p.type===k).length}</div>`).join('');
+  document.querySelectorAll('#tabs .tab').forEach(t=>t.onclick=()=>{curTab=t.dataset.k;renderStudio()});
+  const list=mine.filter(p=>p.type===curTab);
+  const box=$('posts');box.innerHTML='';
+  if(!list.length){box.innerHTML='<div class="empty">Nothing here yet. Add an article and click “Generate &amp; Schedule”.</div>';return}
+  list.forEach((p,i)=>{
+    const el=document.createElement('div');el.className='post';
+    el.innerHTML=`<div class="h"><b>${curTab} #${i+1}</b><div class="r"><span class="cc"></span><input type="date" value="${p.date}"><input type="time" value="${p.time}"><button class="btn g sm">Copy</button></div></div><textarea></textarea>`;
+    const ta=el.querySelector('textarea'),cc=el.querySelector('.cc');
+    ta.value=p.text;cc.textContent=p.text.length+' chars';
+    ta.oninput=()=>{p.text=ta.value;cc.textContent=ta.value.length+' chars';syncLater(p);renderCal()};
+    const [di,ti]=el.querySelectorAll('input');
+    di.onchange=e=>{if(!e.target.value)return;p.date=e.target.value;renderAll();sync(p)};
+    ti.onchange=e=>{if(!e.target.value)return;p.time=e.target.value;renderAll();sync(p)};
+    el.querySelector('button').onclick=()=>copy(p.text);
+    if(locked(p)){ta.disabled=di.disabled=ti.disabled=true}
+    el.appendChild(statusEl(p));
+    box.appendChild(el);
+  });
+}
+function renderCal(){
+  const g=$('grid');g.innerHTML='';
+  $('mname').textContent=view.toLocaleString('en',{month:'long',year:'numeric'});
+  ['MON','TUE','WED','THU','FRI','SAT','SUN'].forEach(d=>g.insertAdjacentHTML('beforeend',`<div class="dow">${d}</div>`));
+  const first=new Date(view);first.setDate(1-((view.getDay()+6)%7));
+  const today=iso(new Date());
+  for(let i=0;i<42;i++){
+    const d=new Date(first);d.setDate(first.getDate()+i);const k=iso(d);
+    const c=document.createElement('div');
+    c.className='cell'+(d.getMonth()!==view.getMonth()?' dim':'')+(k===today?' today':'');
+    c.innerHTML=`<div class="n">${d.getDate()}</div>`;
+    c.ondragover=e=>{e.preventDefault();c.classList.add('over')};
+    c.ondragleave=()=>c.classList.remove('over');
+    c.ondrop=e=>{e.preventDefault();const p=S.posts.find(x=>x.id===e.dataTransfer.getData('id'));if(p){p.date=k;renderAll();sync(p)}};
+    S.posts.filter(p=>p.date===k).sort((a,b)=>a.time.localeCompare(b.time)).forEach(p=>{
+      const ch=document.createElement('div');ch.className='chip';ch.draggable=true;
+      ch.style.borderColor=`var(--${p.type})`;ch.draggable=!locked(p);ch.textContent=`${p.type==='Thread'?'':MARK[p.status]||''}${ICON[p.type]} ${p.time} · ${p.text.replace(/^\d+\/\d+ /,'').replace(/\s+/g,' ').slice(0,40)}`;
+      ch.ondragstart=e=>e.dataTransfer.setData('id',p.id);
+      ch.onclick=()=>openModal(p);
+      c.appendChild(ch);
+    });
+    g.appendChild(c);
+  }
+}
+function renderLib(){
+  const L=$('libList');
+  if(!S.articles.length){L.innerHTML='<div class="empty">Your articles will appear here.</div>';return}
+  L.innerHTML='';
+  S.articles.forEach(a=>{
+    const n=S.posts.filter(p=>p.aid===a.id).length;
+    const el=document.createElement('div');el.className='lib';
+    el.innerHTML=`<div><b></b><br><span>${n} posts · created ${a.created}</span></div><div class="opts"><button class="btn g sm" data-o>Open</button><button class="btn g sm" data-d>Delete</button></div>`;
+    el.querySelector('b').textContent=a.title;
+    el.querySelector('[data-o]').onclick=()=>{curAid=a.id;curTab='Thread';renderAll();go('studio')};
+    el.querySelector('[data-d]').onclick=()=>{if(!confirm('Delete this article and its posts?'))return;S.articles=S.articles.filter(x=>x.id!==a.id);S.posts=S.posts.filter(p=>p.aid!==a.id);if(curAid===a.id)curAid=S.articles[0]?.id||null;renderAll();api('DELETE','/api/articles/'+a.id).catch(fail)};
+    L.appendChild(el);
+  });
+}
+function renderAll(){renderStats();renderStudio();renderCal();renderLib()}
+
+/* ================= MODAL ================= */
+function openModal(p){curPost=p;$('mhead').textContent=`${p.type} post`;$('mtext').value=p.text;$('mdate').value=p.date;$('mtime').value=p.time;const ms=$('mstat');ms.innerHTML='';ms.appendChild(statusEl(p));$('mtext').disabled=$('mdate').disabled=$('mtime').disabled=$('msave').disabled=locked(p);$('modal').classList.add('on')}
+const closeM=()=>$('modal').classList.remove('on');
+$('mclose').onclick=closeM;
+$('msave').onclick=()=>{curPost.text=$('mtext').value;curPost.date=$('mdate').value||curPost.date;curPost.time=$('mtime').value||curPost.time;renderAll();closeM();sync(curPost);toast('Saved ✓')};
+$('mdel').onclick=()=>{const id=curPost.id;S.posts=S.posts.filter(x=>x!==curPost);renderAll();closeM();api('DELETE','/api/posts/'+id).catch(fail)};
+$('mcopy').onclick=()=>copy($('mtext').value);
+
+/* ================= EXPORT ================= */
+const sorted=()=>[...S.posts].sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
+$('copyAll').onclick=()=>copy(sorted().map(p=>`[${p.date} ${p.time}] ${p.type}\n${p.text}`).join('\n\n==========\n\n'));
+$('csv').onclick=()=>{
+  if(!S.posts.length)return toast('No posts to export');
+  const q=s=>'"'+String(s).replace(/"/g,'""')+'"';
+  const rows=[['date','time','channel','article','content'],...sorted().map(p=>[p.date,p.time,p.type,(S.articles.find(a=>a.id===p.aid)||{}).title||'',p.text])];
+  const blob=new Blob([rows.map(r=>r.map(q).join(',')).join('\n')],{type:'text/csv'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='content-calendar.csv';a.click();
+};
+
+/* ================= UI WIRING ================= */
+function go(v){document.querySelectorAll('.view').forEach(x=>x.classList.toggle('on',x.id===v));document.querySelectorAll('nav a').forEach(a=>a.classList.toggle('on',a.dataset.v===v))}
+document.querySelectorAll('nav a').forEach(a=>a.onclick=()=>go(a.dataset.v));
+document.querySelectorAll('#chans .pill,#wk').forEach(p=>p.onclick=()=>p.classList.toggle('on'));
+$('gen').onclick=generate;
+$('prev').onclick=()=>{view.setMonth(view.getMonth()-1);renderCal()};
+$('next').onclick=()=>{view.setMonth(view.getMonth()+1);renderCal()};
+$('todayB').onclick=()=>{view=new Date();view.setDate(1);renderCal()};
+$('start').value=iso(new Date());
+$('sample').onclick=()=>{
+  $('title').value='Why Every Fresher Should Learn Data Structures';
+  $('text').value=`Data structures are the foundation of efficient software. Every app you use daily, from maps to messaging, depends on choosing the right structure for the job. Freshers who understand this write faster and cleaner code.
+
+Arrays and linked lists teach you how memory really works. When you know the cost of inserting into the middle of a list, you stop writing code that silently slows down. This awareness is what interviewers look for in entry-level candidates.
+
+Hash maps solve a huge number of interview problems. Counting frequencies, finding duplicates and caching results all become simple once you trust the hash map. Practice these patterns until they feel natural.
+
+Trees and graphs look scary at first, but they model real life. File systems are trees, social networks are graphs and routes between cities are weighted graphs. Start with traversal, then move to shortest paths.
+
+Consistency beats intensity when learning. Solving one problem every day for three months builds more skill than a weekend of cramming. Track your progress and revisit mistakes weekly.
+
+Finally, connect theory to projects. Build something that uses a queue, a stack or a priority queue and explain why. That story will make your resume stand out in any interview.`;
+};
+const qs=new URLSearchParams(location.search),liErr=qs.get('linkedin')==='error'?(qs.get('msg')||'Connection failed'):'';
+if(qs.get('linkedin')){toast(qs.get('linkedin')==='connected'?'LinkedIn connected ✓':'LinkedIn connection failed');history.replaceState(null,'','/')}
+async function loadLinkedIn(){
+  const box=$('li');
+  try{
+    const s=await api('GET','/api/linkedin/status');
+    box.innerHTML='';
+    const t=document.createElement('b');t.textContent='LinkedIn';box.appendChild(t);
+    const m=document.createElement('div'),ok=s.connected&&!s.expired;
+    if(ok){m.className='ok';m.textContent='Connected'+(s.name?' as '+s.name:'')+(s.expiresAt?' · valid until '+new Date(s.expiresAt).toLocaleDateString('en',{day:'numeric',month:'short'}):'')}
+    else{m.className='bad';m.textContent=s.expired?'Token expired. Reconnect to publish.':'Not connected. Posts cannot be published.'}
+    box.appendChild(m);
+    if(liErr){const e=document.createElement('div');e.className='bad';e.textContent=liErr;box.appendChild(e)}
+    const b=document.createElement('button');b.className='btn g sm';b.textContent=ok?'Reconnect':'Connect LinkedIn';b.onclick=()=>{location.href='/auth/linkedin'};box.appendChild(b);
+  }catch(e){box.textContent='LinkedIn status unavailable'}
+}
+load();loadLinkedIn();
+// Refresh publishing statuses every 30 seconds (the server publishes in the background)
+setInterval(async()=>{try{
+  const ps=await api('GET','/api/posts');let ch=false;
+  ps.forEach(r=>{const p=S.posts.find(x=>x.id===r._id);if(p&&(p.status!==r.status||p.error!==r.error||p.url!==r.publishedUrl)){applyStatus(p,r);ch=true}});
+  if(ch&&!['TEXTAREA','INPUT'].includes(document.activeElement.tagName)&&!$('modal').classList.contains('on'))renderAll();
+}catch(e){}},30000);
+</script>
+</body>
+</html>
